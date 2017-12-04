@@ -3,3 +3,5 @@ out
 bin
 .setting
 projetClientServeur.iml
+.classpath
+.project
