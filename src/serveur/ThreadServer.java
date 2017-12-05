@@ -1,5 +1,8 @@
 package serveur;
 
-public class ThreadServer {
+public class ThreadServer extends Thread {
+
+
+
 
 }
