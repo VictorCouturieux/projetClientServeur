@@ -8,9 +8,6 @@ import java.util.Map.Entry;
 import client.ListFilesClient;
 import comServCli.P2PFile;
 
-/**
- * Created by ctx on 04/12/17.
- */
 public class ListFilesServer {
 	
 	HashMap<P2PFile, ArrayList<SocketAddress>> listFiles;
