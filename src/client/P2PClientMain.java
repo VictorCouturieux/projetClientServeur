@@ -37,7 +37,7 @@ public class P2PClientMain {
 				System.exit(1);
 		}
 		
-		File repository = new File(args[3]);
+		File repository = new File(args[2]);
 		
 		if (!repository.isDirectory()) {
 			System.out.println("Le chemin spécifié n'est pas un répertoire, ARRET DE L'APPLICATION");
