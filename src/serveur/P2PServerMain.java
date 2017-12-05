@@ -12,6 +12,8 @@ public class P2PServerMain {
         ServerSocket servSock = null;
         Socket sockComm = null;
 
+        ListFilesServer lfs = null;
+
 
         int portServ = 0;
 
@@ -33,7 +35,7 @@ public class P2PServerMain {
             servSock = new ServerSocket(portServ); //on creer une nouvelle socket pour le transfert du fichier
             while (true) {
                 sockComm = servSock.accept();
-                ts = new ThreadServer();
+                ts = new ThreadServer(sockComm, lfs);
                 ts.start();
             }
         } catch (IOException e) {
