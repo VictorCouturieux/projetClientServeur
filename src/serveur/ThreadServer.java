@@ -42,17 +42,9 @@ public class ThreadServer extends Thread {
             ois = new ObjectInputStream(new BufferedInputStream(ins));
 
             ListFilesClient lfc = (ListFilesClient) ois.readObject();
-
-//            sockComm.getLocalSocketAddress();
-//            sockComm.getRemoteSocketAddress();
-
             lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress());
-
-
-
-
-
-        } catch (EOFException e){
+        } 
+        catch (EOFException e){
             System.out.println(getRouge() + "Fin de la connection avec le  client : " +
                     " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort() + getBlanc());
         } catch (IOException e) {
