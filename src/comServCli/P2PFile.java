@@ -1,12 +1,14 @@
 package comServCli;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Created by ctx on 04/12/17.
  */
-public class P2PFile {
+public class P2PFile implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String nameFile;
 	private long sizeFile;
 	

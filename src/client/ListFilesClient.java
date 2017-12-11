@@ -1,11 +1,14 @@
 package client;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import comServCli.P2PFile;
 
-public class ListFilesClient {
+public class ListFilesClient implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<P2PFile> listFiles;
 
