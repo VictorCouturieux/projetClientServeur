@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Objects;
 
 public class P2PClientMain {
 	
@@ -21,6 +23,8 @@ public class P2PClientMain {
 		Socket sockComm = null;
 		ObjectOutputStream sockOs = null;
 		ObjectInputStream sockIn = null;
+
+        InetAddress ipHoteHeberge = null;
 		
 		//Flux permettant de gérer la saisie au clavier
 		BufferedReader clavier = new BufferedReader(new InputStreamReader(System.in));
@@ -52,9 +56,13 @@ public class P2PClientMain {
 		ListFilesClient listFiles = new ListFilesClient(repository);
 		
 		System.out.println(listFiles);
-		
-		
+
+
 		try {
+
+            printAllIP(false);
+            System.out.println("\nToutes les adresse IP de ma machine (qui ne sont pas des adresses de bouclage) : " );
+
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
 			
@@ -90,4 +98,40 @@ public class P2PClientMain {
 			e.printStackTrace();
 		}
 	}
+
+    private static void printAllIP(boolean loopBack) throws SocketException {
+        Enumeration<NetworkInterface> en = null;
+        // Returns all the interfaces on this machine.
+        try{
+            en = NetworkInterface.getNetworkInterfaces();
+        }
+        catch(SocketException e){
+//            System.out.println("SocketException lev�e");
+            e.printStackTrace();
+            throw new SocketException("SocketException levée");
+        }
+        while (en.hasMoreElements()) {
+            NetworkInterface i = en.nextElement();
+            //Convenience method to return an Enumeration with all or a subset of the InetAddresses bound to this network interface.
+            Enumeration<InetAddress> en2 = i.getInetAddresses();
+            int size = 0;
+            ArrayList<InetAddress> listIP = null;
+            while(en2.hasMoreElements()) {
+                InetAddress addr = en2.nextElement();
+                if (addr.isLoopbackAddress() == loopBack) {
+                    // pour n'afficher que les IP qui ne sont pas des adresses de lien local
+                    //if (!addr.isLinkLocalAddress()){
+
+                    // pour n'afficher que les adresses IPv4
+                    if (addr instanceof Inet4Address){
+                        System.out.println("\t" + addr.getHostAddress());
+                        listIP.add(addr);
+                    }
+                }
+                size++;
+            }
+//            return listIP;
+        }
+    }
+
 }
