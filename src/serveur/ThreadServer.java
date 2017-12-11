@@ -46,7 +46,7 @@ public class ThreadServer extends Thread {
 //            sockComm.getLocalSocketAddress();
 //            sockComm.getRemoteSocketAddress();
 
-//            lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress(););
+            lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress());
 
 
 
