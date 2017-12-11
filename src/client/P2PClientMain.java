@@ -114,21 +114,24 @@ public class P2PClientMain {
             NetworkInterface i = en.nextElement();
             //Convenience method to return an Enumeration with all or a subset of the InetAddresses bound to this network interface.
             Enumeration<InetAddress> en2 = i.getInetAddresses();
-            int size = 0;
+
             ArrayList<InetAddress> listIP = null;
             while(en2.hasMoreElements()) {
                 InetAddress addr = en2.nextElement();
                 if (addr.isLoopbackAddress() == loopBack) {
                     // pour n'afficher que les IP qui ne sont pas des adresses de lien local
-                    //if (!addr.isLinkLocalAddress()){
+                    //if (!addr.isLinkLocalAddress()){}
 
                     // pour n'afficher que les adresses IPv4
                     if (addr instanceof Inet4Address){
                         System.out.println("\t" + addr.getHostAddress());
-                        listIP.add(addr);
+//                        listIP.add(addr);
+						if (Objects.equals(addr.getHostAddress(), "127.0.0.1")){
+							throw new ExceptionInInitializerError("Vous n'avez pas d'adresse IP");
+						}
                     }
                 }
-                size++;
+
             }
 //            return listIP;
         }
