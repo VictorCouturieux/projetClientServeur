@@ -61,9 +61,13 @@ public class ThreadServer extends Thread {
 				   System.out.println(P2PFunctions.printSearch(currentSearch));
 				}
 				break;
-			case "help":
 				
+			case "help":
+				sockOs.writeUTF(" search <pattern> \n get <num> \n list \n local list \n quit");
 				break;
+				
+			case "local":
+				
 			default:
 				break;
 			}

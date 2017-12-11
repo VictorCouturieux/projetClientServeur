@@ -78,7 +78,11 @@ public class P2PClientMain {
 				
 				if (saisie.length() != 0) {
 					Request requete = new Request(saisie);
-					sockOs.writeObject(requete);
+					if (requete.getCommande() == "local") {
+						System.out.println(listFiles.toString());
+					} else {
+						sockOs.writeObject(requete);
+					}
 				}
 			} while (saisie.length() != 0);
 			
