@@ -82,6 +82,9 @@ public class ThreadServer extends Thread {
 				}
 				break;
 				
+			case "get":
+				break;
+				
 			default:
 				break;
 			}
