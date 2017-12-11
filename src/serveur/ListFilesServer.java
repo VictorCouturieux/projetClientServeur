@@ -13,7 +13,7 @@ import comServCli.P2PFile;
  */
 public class ListFilesServer {
 	
-	HashMap<P2PFile, ArrayList<SocketAddress>> listFiles;
+	private HashMap<P2PFile, ArrayList<SocketAddress>> listFiles;
 
 	public ListFilesServer() {
 		this.listFiles = new HashMap<P2PFile, ArrayList<SocketAddress>>();
@@ -44,5 +44,9 @@ public class ListFilesServer {
 			}
 			return print;
 		}
+	}
+	
+	public HashMap<P2PFile, ArrayList<SocketAddress>> getListFiles() {
+		return listFiles;
 	}
 }

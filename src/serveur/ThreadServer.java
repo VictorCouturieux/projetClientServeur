@@ -7,7 +7,10 @@ import comServCli.P2PFunctions;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class ThreadServer extends Thread {
 
@@ -50,12 +53,12 @@ public class ThreadServer extends Thread {
             
             Request requete = (Request)sockIn.readObject();
            
-            ArrayList<P2PFile> currentSearch = null;
+            ArrayList<P2PFile> currentSearch = new ArrayList<P2PFile>();
             String commande = requete.getCommande();
             
             switch (commande) {
 			case "list":
-				if (currentSearch == null) {
+				if (currentSearch.isEmpty()) {
 					sockOs.writeUTF("Aucun résultat disponible");
 				} else {
 				   System.out.println(P2PFunctions.printSearch(currentSearch));
@@ -66,7 +69,18 @@ public class ThreadServer extends Thread {
 				sockOs.writeUTF(" search <pattern> \n get <num> \n list \n local list \n quit");
 				break;
 				
-			case "local":
+			case "search":
+				String motif = requete.getArg();
+				HashMap<P2PFile, ArrayList<SocketAddress>> listFiles = lfs.getListFiles();
+				
+				for (Entry<P2PFile, ArrayList<SocketAddress>> mapentry : listFiles.entrySet()) {
+					P2PFile file = mapentry.getKey();
+					String nameFile = file.getNameFile();
+					if (nameFile.indexOf(motif) != -1) {
+						currentSearch.add(file);
+					}
+				}
+				break;
 				
 			default:
 				break;
