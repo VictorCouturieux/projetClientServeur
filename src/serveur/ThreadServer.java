@@ -1,16 +1,22 @@
 package serveur;
 
-import client.ListFilesClient;
-import client.Request;
-import comServCli.P2PFile;
-import comServCli.P2PFunctions;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import client.ListFilesClient;
+import client.Request;
+import comServCli.P2PFile;
 
 public class ThreadServer extends Thread {
 
@@ -58,11 +64,7 @@ public class ThreadServer extends Thread {
             
             switch (commande) {
 			case "list":
-				if (currentSearch.isEmpty()) {
-					sockOs.writeUTF("Aucun résultat disponible");
-				} else {
-				   System.out.println(P2PFunctions.printSearch(currentSearch));
-				}
+				sockOs.writeObject(currentSearch);
 				break;
 				
 			case "help":
@@ -80,6 +82,8 @@ public class ThreadServer extends Thread {
 						currentSearch.add(file);
 					}
 				}
+				
+				sockOs.writeObject(currentSearch);
 				break;
 				
 			case "get":

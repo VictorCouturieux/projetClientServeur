@@ -8,10 +8,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Objects;
+
+import comServCli.P2PFile;
+import comServCli.P2PFunctions;;
 
 public class P2PClientMain {
 	
@@ -77,6 +84,7 @@ public class P2PClientMain {
 			sockOs.flush();
 			
 			String saisie;
+			ArrayList<P2PFile> currentSearch;
 			
 			do {
 				
@@ -91,10 +99,36 @@ public class P2PClientMain {
 					} else {
 						sockOs.writeObject(requete);
 					}
+					
+					switch (requete.getCommande()) {
+					case "list":
+						currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
+						if (currentSearch.isEmpty()) {
+							System.out.println("La liste des résultats est vide");
+						} else {
+							P2PFunctions.printSearch(currentSearch);
+						}
+						break;
+						
+					case "help":
+						String reponse = sockIn.readUTF();
+						System.out.println(reponse);
+						break;
+						
+					case "search":
+						currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
+						P2PFunctions.printSearch(currentSearch);
+						break;
+
+					default:
+						break;
+					}
 				}
 			} while (saisie.length() != 0);
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
