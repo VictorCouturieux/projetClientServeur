@@ -11,11 +11,10 @@ public class ListFilesClient {
 
 	public ListFilesClient(File repertoire) {
 		this.listFiles = new ArrayList<P2PFile>();
-		String [] files = repertoire.list();
+		File [] files = repertoire.listFiles();
 		
 		for (int i = 0; i < files.length; i++) {
-			File r = new File(files[i]);
-			P2PFile pFile = new P2PFile(r);
+			P2PFile pFile = new P2PFile(files[i]);
 			this.listFiles.add(pFile);
 		}
 	}

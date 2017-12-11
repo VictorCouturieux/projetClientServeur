@@ -2,8 +2,10 @@ package client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -19,6 +21,9 @@ public class P2PClientMain {
 		Socket sockComm = null;
 		ObjectOutputStream sockOs = null;
 		ObjectInputStream sockIn = null;
+		
+		//Flux permettant de gérer la saisie au clavier
+		BufferedReader clavier = new BufferedReader(new InputStreamReader(System.in));
 		
 		//On vérifie le nombre d'arguments
 		if (args.length != 3) {
@@ -62,6 +67,20 @@ public class P2PClientMain {
 			
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
+			
+			String saisie;
+			
+			do {
+				
+				System.out.println("-->");
+				
+				saisie = clavier.readLine();
+				
+				if (saisie.length() != 0) {
+					Request requete = new Request(saisie);
+					sockOs.writeObject(requete);
+				}
+			} while (saisie.length() != 0);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

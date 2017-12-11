@@ -1,9 +1,13 @@
 package serveur;
 
 import client.ListFilesClient;
+import client.Request;
+import comServCli.P2PFile;
+import comServCli.P2PFunctions;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ThreadServer extends Thread {
 
@@ -14,8 +18,8 @@ public class ThreadServer extends Thread {
     private InputStream ins = null;
     private OutputStream outs = null;
 
-    ObjectInputStream ois = null;
-    ObjectOutputStream oos = null;
+    ObjectInputStream sockIn = null;
+    ObjectOutputStream sockOs = null;
 
     ThreadServer(Socket sockComm, ListFilesServer lfs) {
         this.sockComm = sockComm;
@@ -37,12 +41,32 @@ public class ThreadServer extends Thread {
             ins = sockComm.getInputStream();
             outs = sockComm.getOutputStream();
 
-            oos = new ObjectOutputStream(new BufferedOutputStream(outs));
-            oos.flush();
-            ois = new ObjectInputStream(new BufferedInputStream(ins));
+            sockOs = new ObjectOutputStream(new BufferedOutputStream(outs));
+            sockOs.flush();
+            sockIn = new ObjectInputStream(new BufferedInputStream(ins));
 
-            ListFilesClient lfc = (ListFilesClient) ois.readObject();
+            ListFilesClient lfc = (ListFilesClient)sockIn.readObject();
             lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress());
+            
+            Request requete = (Request)sockIn.readObject();
+           
+            ArrayList<P2PFile> currentSearch = null;
+            String commande = requete.getCommande();
+            
+            switch (commande) {
+			case "list":
+				if (currentSearch == null) {
+					sockOs.writeUTF("Aucun résultat disponible");
+				} else {
+				   System.out.println(P2PFunctions.printSearch(currentSearch));
+				}
+				break;
+			case "help":
+				
+				break;
+			default:
+				break;
+			}
         } 
         catch (EOFException e){
             System.out.println(getRouge() + "Fin de la connection avec le  client : " +
@@ -56,10 +80,10 @@ public class ThreadServer extends Thread {
             e.printStackTrace();
         } finally{
             try {
-                if (oos != null)
-                    oos.close();
-                if (ois != null)
-                    ois.close();
+                if (sockOs != null)
+                    sockOs.close();
+                if (sockIn != null)
+                    sockIn.close();
                 if (sockComm != null)
                     sockComm.close();
             }

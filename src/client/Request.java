@@ -8,7 +8,8 @@ import java.util.Objects;
  */
 public class Request implements Serializable {
 
-    private String commande;
+	private static final long serialVersionUID = 1L;
+	private String commande;
     private String arg;
 
     public Request(String req) throws IllegalArgumentException {
