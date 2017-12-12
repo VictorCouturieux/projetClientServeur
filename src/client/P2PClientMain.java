@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Objects;
 
+import com.sun.istack.internal.FinalArrayList;
+
 import comServCli.P2PFile;
 import comServCli.P2PFunctions;;
 
@@ -128,9 +130,8 @@ public class P2PClientMain {
 									break;
 									
 								case "quit":
-									System.out.println("FIN DE L'APPLICATION");
-									System.exit(0);
-
+									throw new EndConnectionException();
+							
 								default:
 									System.out.println("Erreur de requête");
 									break;
@@ -146,6 +147,26 @@ public class P2PClientMain {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (EndConnectionException e) {
+			System.out.println("Fermeture de l'application");
+		}
+		finally {
+			try {
+				if (sockOs != null){
+					sockOs.close();
+				}
+				
+				if (sockIn != null){
+					sockIn.close();
+				}
+				
+				if (sockComm != null){
+					sockComm.close();
+				}
+			}
+			catch(IOException e) {
+				System.out.println("Erreur IO");
+			}
 		}
 	}
 
@@ -156,7 +177,6 @@ public class P2PClientMain {
             en = NetworkInterface.getNetworkInterfaces();
         }
         catch(SocketException e){
-//            System.out.println("SocketException levée");
             e.printStackTrace();
             throw new SocketException("SocketException levée");
         }
@@ -165,7 +185,6 @@ public class P2PClientMain {
             //Convenience method to return an Enumeration with all or a subset of the InetAddresses bound to this network interface.
             Enumeration<InetAddress> en2 = i.getInetAddresses();
 
-            ArrayList<InetAddress> listIP = null;
             while(en2.hasMoreElements()) {
                 InetAddress addr = en2.nextElement();
                 if (addr.isLoopbackAddress() == loopBack) {
@@ -175,7 +194,6 @@ public class P2PClientMain {
                     // pour n'afficher que les adresses IPv4
                     if (addr instanceof Inet4Address){
                         System.out.println("\t" + addr.getHostAddress());
-//                        listIP.add(addr);
 						if (!Objects.equals(addr.getHostAddress(), "127.0.0.1")){
 							return addr;
 						}
