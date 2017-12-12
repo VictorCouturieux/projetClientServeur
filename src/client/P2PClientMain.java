@@ -68,7 +68,7 @@ public class P2PClientMain {
 
 		try {
 
-            printAllIP(false);
+             printAllIP(false);
             System.out.println("\nToutes les adresse IP de ma machine (qui ne sont pas des adresses de bouclage) : " );
 
 			//On crée la socket d'écoute du serveur
@@ -136,7 +136,7 @@ public class P2PClientMain {
 		}
 	}
 
-    private static void printAllIP(boolean loopBack) throws SocketException {
+    private static InetAddress printAllIP(boolean loopBack) throws SocketException {
         Enumeration<NetworkInterface> en = null;
         // Returns all the interfaces on this machine.
         try{
@@ -163,15 +163,14 @@ public class P2PClientMain {
                     if (addr instanceof Inet4Address){
                         System.out.println("\t" + addr.getHostAddress());
 //                        listIP.add(addr);
-						if (Objects.equals(addr.getHostAddress(), "127.0.0.1")){
-							throw new ExceptionInInitializerError("Vous n'avez pas d'adresse IP");
+						if (!Objects.equals(addr.getHostAddress(), "127.0.0.1")){
+							return addr;
 						}
                     }
                 }
-
             }
-//            return listIP;
         }
+		throw new ExceptionInInitializerError("Vous n'avez pas d'adresse IP");
     }
 
 }
