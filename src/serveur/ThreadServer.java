@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import client.ListFilesClient;
 import client.Request;
 import comServCli.P2PFile;
+import comServCli.P2PFunctions;;
 
 public class ThreadServer extends Thread {
 
