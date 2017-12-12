@@ -108,7 +108,7 @@ public class P2PClientMain {
 							
 							switch (commande) {
 								case "list":
-									if (currentSearch == null) {
+									if (currentSearch.length == 0) {
 										System.out.println("La liste des résultats est vide");
 									} else {
 										System.out.println(P2PFunctions.printSearch(currentSearch));

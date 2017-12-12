@@ -29,6 +29,10 @@ public class ListFilesServer {
 		}
 	}
 	
+	public void deleteClient(ListFilesClient lfc, SocketAddress sa) {
+		
+	}
+	
 	public String toString() {
 		if (listFiles.isEmpty()) {
 			return "La liste de fichiers est vide";

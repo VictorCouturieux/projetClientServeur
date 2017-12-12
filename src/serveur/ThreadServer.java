@@ -60,6 +60,7 @@ public class ThreadServer extends Thread {
             System.out.print(lfs.toString());
 
             Request requete;
+            P2PFile[] currentSearchArray = null;
 
             while (true){
                 requete = (Request) sockIn.readObject();
@@ -68,7 +69,10 @@ public class ThreadServer extends Thread {
 
                 switch (commande) {
                     case "list":
-                        sockOs.writeObject(currentSearch);
+                    	currentSearchArray = new P2PFile[currentSearch.size()];
+                        currentSearch.toArray(currentSearchArray);
+                        
+                        sockOs.writeObject(currentSearchArray);
                         sockOs.flush();
                         break;
 
@@ -89,11 +93,15 @@ public class ThreadServer extends Thread {
                             }
                         }
 
-                        P2PFile[] currentSearchArray = new P2PFile[currentSearch.size()];
+                        currentSearchArray = new P2PFile[currentSearch.size()];
                         currentSearch.toArray(currentSearchArray);
 
                         sockOs.writeObject(currentSearchArray);
                         sockOs.flush();
+                        break;
+                    
+                    case "quit":
+                    	lfs.deleteClient(lfc, sockComm.getRemoteSocketAddress());
                         break;
 
                     case "get":
