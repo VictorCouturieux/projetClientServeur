@@ -45,7 +45,7 @@ public class ThreadServer extends Thread {
     public void run() {
         try {
 
-            System.out.println(getVert() + "Debut de connection avec le client : IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort()+ getBlanc());
+            System.out.println("Debut de connection avec le client : IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
 
             ins = sockComm.getInputStream();
             outs = sockComm.getOutputStream();
@@ -95,13 +95,13 @@ public class ThreadServer extends Thread {
 			}
         } 
         catch (EOFException e){
-            System.out.println(getRouge() + "Fin de la connection avec le  client : " +
-                    " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort() + getBlanc());
+            System.out.println("Fin de la connection avec le  client : " +
+                    " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
         } catch (IOException e) {
             System.out.println("Error : " + e);
         } catch (NullPointerException e){
-            System.out.println(getRouge() +"Fin de la connection avec le  client (bug NullPointerException) : " +
-                    " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort() + getBlanc());
+            System.out.println("Fin de la connection avec le  client (bug NullPointerException) : " +
+                    " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally{

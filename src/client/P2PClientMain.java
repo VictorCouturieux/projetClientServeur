@@ -101,7 +101,8 @@ public class P2PClientMain {
 						sockOs.writeObject(requete);
 					}
 					
-					switch (requete.getCommande()) {
+					String commande = requete.getCommande();
+					switch (commande) {
 					case "list":
 						currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
 						if (currentSearch.isEmpty()) {
@@ -122,6 +123,7 @@ public class P2PClientMain {
 						break;
 
 					default:
+						System.out.println("Erreur de requête");
 						break;
 					}
 				}
@@ -141,7 +143,7 @@ public class P2PClientMain {
             en = NetworkInterface.getNetworkInterfaces();
         }
         catch(SocketException e){
-//            System.out.println("SocketException lev�e");
+//            System.out.println("SocketException levée");
             e.printStackTrace();
             throw new SocketException("SocketException levée");
         }
