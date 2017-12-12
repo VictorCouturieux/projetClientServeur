@@ -16,8 +16,7 @@ import java.util.Map.Entry;
 
 import client.ListFilesClient;
 import client.Request;
-import comServCli.P2PFile;
-import comServCli.P2PFunctions;;
+import comServCli.P2PFile;;
 
 public class ThreadServer extends Thread {
 
@@ -89,7 +88,11 @@ public class ThreadServer extends Thread {
 					}
 				}
 				
-				sockOs.writeObject(currentSearch);
+				System.out.println(currentSearch.size());
+				P2PFile [] currentSearchArray = new P2PFile[currentSearch.size()];
+				currentSearch.toArray(currentSearchArray);
+				
+				sockOs.writeObject(currentSearchArray);
 				sockOs.flush();
 				break;
 				

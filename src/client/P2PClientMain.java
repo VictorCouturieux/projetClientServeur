@@ -86,7 +86,7 @@ public class P2PClientMain {
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
 
-			ArrayList<P2PFile> currentSearch;
+			P2PFile [] currentSearch = null;
 
 			String saisie = null;
 			do {
@@ -106,11 +106,10 @@ public class P2PClientMain {
 							
 							switch (commande) {
 								case "list":
-									currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
-									if (currentSearch.isEmpty()) {
+									if (currentSearch == null) {
 										System.out.println("La liste des résultats est vide");
 									} else {
-										P2PFunctions.printSearch(currentSearch);
+										System.out.println(P2PFunctions.printSearch(currentSearch));
 									}
 									break;
 
@@ -120,8 +119,12 @@ public class P2PClientMain {
 									break;
 
 								case "search":
-									currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
-									P2PFunctions.printSearch(currentSearch);
+									currentSearch = (P2PFile [])sockIn.readObject();
+									if (currentSearch.length == 0) {
+										System.out.println("La liste des résultats est vide");
+									} else {
+										System.out.println(P2PFunctions.printSearch(currentSearch));
+									}
 									break;
 
 								default:
