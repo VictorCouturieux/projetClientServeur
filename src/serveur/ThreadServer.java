@@ -61,7 +61,7 @@ public class ThreadServer extends Thread {
 
             Request requete;
 
-            do {
+            while (true){
                 requete = (Request) sockIn.readObject();
                 ArrayList<P2PFile> currentSearch = new ArrayList<P2PFile>();
                 String commande = requete.getCommande();
@@ -79,7 +79,6 @@ public class ThreadServer extends Thread {
 
                     case "search":
                         String motif = requete.getArg();
-                        System.out.println(motif);
                         HashMap<P2PFile, ArrayList<SocketAddress>> listFiles = lfs.getListFiles();
 
                         for (Entry<P2PFile, ArrayList<SocketAddress>> mapentry : listFiles.entrySet()) {
@@ -90,7 +89,6 @@ public class ThreadServer extends Thread {
                             }
                         }
 
-                        System.out.println(currentSearch.size());
                         P2PFile[] currentSearchArray = new P2PFile[currentSearch.size()];
                         currentSearch.toArray(currentSearchArray);
 
@@ -105,8 +103,7 @@ public class ThreadServer extends Thread {
                     default:
                         break;
                 }
-
-            }while (requete != null);
+            } 
         } 
         catch (EOFException e){
             System.out.println("Fin de la connection avec le  client : " +

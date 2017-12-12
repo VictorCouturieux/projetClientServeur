@@ -126,6 +126,10 @@ public class P2PClientMain {
 										System.out.println(P2PFunctions.printSearch(currentSearch));
 									}
 									break;
+									
+								case "quit":
+									System.out.println("FIN DE L'APPLICATION");
+									System.exit(0);
 
 								default:
 									System.out.println("Erreur de requête");
