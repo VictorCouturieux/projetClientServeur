@@ -95,36 +95,36 @@ public class P2PClientMain {
 
 					if (saisie.length() != 0) {
 						Request requete = new Request(saisie);
-						if (requete.getCommande() == "local") {
+						if (requete.getCommande().equals("local")) {
 							System.out.println(listFiles.toString());
 						} else {
 							sockOs.writeObject(requete);
-						}
+							String commande = requete.getCommande();
+							
+							switch (commande) {
+								case "list":
+									currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
+									if (currentSearch.isEmpty()) {
+										System.out.println("La liste des résultats est vide");
+									} else {
+										P2PFunctions.printSearch(currentSearch);
+									}
+									break;
 
-						String commande = requete.getCommande();
-						switch (commande) {
-							case "list":
-								currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
-								if (currentSearch.isEmpty()) {
-									System.out.println("La liste des résultats est vide");
-								} else {
+								case "help":
+									String reponse = sockIn.readUTF();
+									System.out.println(reponse);
+									break;
+
+								case "search":
+									currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
 									P2PFunctions.printSearch(currentSearch);
-								}
-								break;
+									break;
 
-							case "help":
-								String reponse = sockIn.readUTF();
-								System.out.println(reponse);
-								break;
-
-							case "search":
-								currentSearch = (ArrayList<P2PFile>) sockIn.readObject();
-								P2PFunctions.printSearch(currentSearch);
-								break;
-
-							default:
-								System.out.println("Erreur de requête");
-								break;
+								default:
+									System.out.println("Erreur de requête");
+									break;
+							}
 						}
 					}
 				} catch (IllegalArgumentException e) {
