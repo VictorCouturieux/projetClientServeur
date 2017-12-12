@@ -36,11 +36,11 @@ public class ListFilesServer {
 		else {
 			String print = "";
 			for (Entry<P2PFile, ArrayList<SocketAddress>> mapentry : listFiles.entrySet()) {
-				print += "<" + mapentry.getKey().toString();
+				print += "\t<" + mapentry.getKey().toString();
 				for (SocketAddress sa : mapentry.getValue()) {
 					print += " " + sa.toString() + " ";
 				}
-				print += ">";
+				print += ">\n";
 			}
 			return print;
 		}

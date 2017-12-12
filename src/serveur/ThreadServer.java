@@ -57,7 +57,7 @@ public class ThreadServer extends Thread {
             ListFilesClient lfc = (ListFilesClient)sockIn.readObject();
             lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress());
             
-            System.out.println(lfs.toString());
+            System.out.print(lfs.toString());
 
             Request requete;
 
