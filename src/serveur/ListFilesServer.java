@@ -30,7 +30,16 @@ public class ListFilesServer {
 	}
 	
 	public void deleteClient(ListFilesClient lfc, SocketAddress sa) {
-		
+		for (P2PFile p2pFile : lfc.getListFiles()) {
+			if (listFiles.containsKey(p2pFile)) {
+				ArrayList<SocketAddress> listSA = listFiles.get(p2pFile);
+				listSA.remove(sa);
+				
+				if (listSA.isEmpty()) {
+					listFiles.remove(p2pFile);
+				}
+			}
+		}
 	}
 	
 	public String toString() {
