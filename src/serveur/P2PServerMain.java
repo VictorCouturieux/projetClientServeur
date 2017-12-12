@@ -12,7 +12,7 @@ public class P2PServerMain {
         ServerSocket servSock = null;
         Socket sockComm = null;
 
-        ListFilesServer lfs = null;
+        ListFilesServer lfs = new ListFilesServer();
 
 
         int portServ = 0;
