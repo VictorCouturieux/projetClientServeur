@@ -84,48 +84,51 @@ public class P2PClientMain {
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
 			
-			String saisie;
 			ArrayList<P2PFile> currentSearch;
 			
 			do {
-				
-				System.out.println("-->");
-				
-				saisie = clavier.readLine();
-				
-				if (saisie.length() != 0) {
-					Request requete = new Request(saisie);
-					if (requete.getCommande() == "local") {
-						System.out.println(listFiles.toString());
-					} else {
-						sockOs.writeObject(requete);
-					}
+				String saisie;
+				try {
+					System.out.println("-->");
 					
-					String commande = requete.getCommande();
-					switch (commande) {
-					case "list":
-						currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
-						if (currentSearch.isEmpty()) {
-							System.out.println("La liste des résultats est vide");
+					saisie = clavier.readLine();
+					
+					if (saisie.length() != 0) {
+						Request requete = new Request(saisie);
+						if (requete.getCommande() == "local") {
+							System.out.println(listFiles.toString());
 						} else {
-							P2PFunctions.printSearch(currentSearch);
+							sockOs.writeObject(requete);
 						}
-						break;
 						
-					case "help":
-						String reponse = sockIn.readUTF();
-						System.out.println(reponse);
-						break;
-						
-					case "search":
-						currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
-						P2PFunctions.printSearch(currentSearch);
-						break;
-
-					default:
-						System.out.println("Erreur de requête");
-						break;
+						String commande = requete.getCommande();
+						switch (commande) {
+						case "list":
+							currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
+							if (currentSearch.isEmpty()) {
+								System.out.println("La liste des résultats est vide");
+							} else {
+								P2PFunctions.printSearch(currentSearch);
+							}
+							break;
+							
+						case "help":
+							String reponse = sockIn.readUTF();
+							System.out.println(reponse);
+							break;
+							
+						case "search":
+							currentSearch = (ArrayList<P2PFile>)sockIn.readObject();
+							P2PFunctions.printSearch(currentSearch);
+							break;
+	
+						default:
+							System.out.println("Erreur de requête");
+							break;
+						}
 					}
+				} catch (IllegalArgumentException e) {
+					System.out.println(e.getMessage());
 				}
 			} while (saisie.length() != 0);
 			
