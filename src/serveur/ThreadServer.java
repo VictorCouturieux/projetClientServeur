@@ -116,11 +116,13 @@ public class ThreadServer extends Thread {
         catch (EOFException e){
             System.out.println("Fin de la connection avec le  client : " +
                     " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
+            System.out.println(lfs.toString());
         } catch (IOException e) {
             System.out.println("Error : " + e);
         } catch (NullPointerException e){
             System.out.println("Fin de la connection avec le  client (bug NullPointerException) : " +
                     " IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
+            System.out.println(lfs.toString());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally{
