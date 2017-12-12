@@ -68,8 +68,9 @@ public class P2PClientMain {
 
 		try {
 
-			printAllIP(false);
-			System.out.println("\nToutes les adresse IP de ma machine (qui ne sont pas des adresses de bouclage) : ");
+			ipHoteHeberge = printAllIP(false);
+			System.out.println("\n adresse IP de ma machine (qui n'est pas une adresse de bouclage) : " + ipServ);
+
 
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
