@@ -57,6 +57,8 @@ public class ThreadServer extends Thread {
             ListFilesClient lfc = (ListFilesClient)sockIn.readObject();
             lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress());
             
+            System.out.println(lfs.toString());
+            
             Request requete = (Request)sockIn.readObject();
            
             ArrayList<P2PFile> currentSearch = new ArrayList<P2PFile>();
@@ -65,14 +67,17 @@ public class ThreadServer extends Thread {
             switch (commande) {
 			case "list":
 				sockOs.writeObject(currentSearch);
+				sockOs.flush();
 				break;
 				
 			case "help":
 				sockOs.writeUTF(" search <pattern> \n get <num> \n list \n local list \n quit");
+				sockOs.flush();
 				break;
 				
 			case "search":
 				String motif = requete.getArg();
+				System.out.println(motif);
 				HashMap<P2PFile, ArrayList<SocketAddress>> listFiles = lfs.getListFiles();
 				
 				for (Entry<P2PFile, ArrayList<SocketAddress>> mapentry : listFiles.entrySet()) {
@@ -84,6 +89,7 @@ public class ThreadServer extends Thread {
 				}
 				
 				sockOs.writeObject(currentSearch);
+				sockOs.flush();
 				break;
 				
 			case "get":

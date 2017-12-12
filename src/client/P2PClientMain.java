@@ -78,8 +78,9 @@ public class P2PClientMain {
 			sockComm = new Socket(ipServ, portServ);
 
 			//On instancie les flux
-			sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
 			sockIn = new ObjectInputStream(new BufferedInputStream(sockComm.getInputStream()));
+			sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
+			sockOs.flush();
 
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
@@ -99,6 +100,7 @@ public class P2PClientMain {
 							System.out.println(listFiles.toString());
 						} else {
 							sockOs.writeObject(requete);
+							sockOs.flush();
 							String commande = requete.getCommande();
 							
 							switch (commande) {
