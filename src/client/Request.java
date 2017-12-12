@@ -21,12 +21,17 @@ public class Request implements Serializable {
             if (tblReq.length == 1) {
                 if (!(Objects.equals(tblReq[0], "list") || Objects.equals(tblReq[0], "help") || Objects.equals(tblReq[0], "quit"))){
                     throw new IllegalArgumentException("argument non valide");
+                } else {
+                    commande = tblReq[0];
                 }
             } else if (tblReq.length == 2){
                 if (!(Objects.equals(tblReq[0], "local") || Objects.equals(tblReq[0], "get") || Objects.equals(tblReq[0], "search"))){
                     throw new IllegalArgumentException("argument non valide");
                 } else if (Objects.equals(tblReq[0], "local") && !(Objects.equals(tblReq[1], "list")) ) {
                     throw new IllegalArgumentException("argument non valide");
+                } else{
+                    commande = tblReq[0];
+                    arg = tblReq[1];
                 }
             } else {
                 throw new IllegalArgumentException("le nombre d'argument n'est pas respectee");
