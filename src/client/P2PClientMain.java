@@ -1,13 +1,6 @@
 package client;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -109,17 +102,34 @@ public class P2PClientMain {
 							
 							switch (commande) {
 								case "list":
-									if (currentSearch.length == 0) {
-										System.out.println("La liste des résultats est vide");
-									} else {
-										System.out.println(P2PFunctions.printSearch(currentSearch));
-									}
-									break;
+                                    if (currentSearch != null) {
+                                        if (currentSearch.length == 0) {
+                                            System.out.println("La liste des résultats est vide");
+                                        } else {
+                                            System.out.println(P2PFunctions.printSearch(currentSearch));
+                                        }
+                                    }else {
+                                        System.out.println("la liste de résultats de recherche courante n'existe pas encore. \nveuiller l'initialiser.");
+                                    }
+                                    break;
 
 								case "help":
 									String reponse = sockIn.readUTF();
 									System.out.println(reponse);
 									break;
+
+                                case "get":
+
+
+
+
+
+                                    //// - Permet la lecture dans un fichier d'accès aléatoire.
+                                    //// - Un fichier d'accès aléatoire se comporte comme un grand nombre d'octets stockés dans le système de fichiers.
+
+//                                    RandomAccessFile outFile = new RandomAccessFile(repository.getAbsolutePath() + nomFich,"r" ); // création du fichier en lecture
+
+                                    break;
 
 								case "search":
 									currentSearch = (P2PFile [])sockIn.readObject();
