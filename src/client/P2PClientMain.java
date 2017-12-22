@@ -8,12 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Objects;
@@ -65,14 +60,20 @@ public class P2PClientMain {
 		
 		ListFilesClient listFiles = new ListFilesClient(repository);
 		
-		System.out.println(listFiles);
+		System.out.println("Fichier que vous posseder :\n" + listFiles);
 
 
 		try {
 
+			System.out.println("Adresse de non boulclage disponible :");
 			ipHoteHeberge = printAllIP(false);
-			System.out.println("\n adresse IP de ma machine (qui n'est pas une adresse de bouclage) : " + ipServ);
 
+			if (Objects.equals(ipHoteHeberge.getHostAddress(), ipServ)){
+				System.out.println("\nAdresse IP " + ipServ + " de ma machine (qui n'est pas une adresse de bouclage) : ");
+			} else {
+				System.out.println("\nAdresse IP " + ipServ + " ne correspond a aucune adresse valide.");
+				System.exit(0);
+			}
 
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
@@ -143,9 +144,12 @@ public class P2PClientMain {
 				}
 			} while (saisie.length() != 0);
 
+		} catch (ConnectException e){
+			System.out.println("\nLa connection au serveur n'a pas pu aboutir");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			System.out.println();
 			e.printStackTrace();
 		} catch (EndConnectionException e) {
 			System.out.println("Fermeture de l'application");
