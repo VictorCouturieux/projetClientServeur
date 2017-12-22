@@ -64,18 +64,9 @@ public class ThreadServer extends Thread {
 
             while (true){
                 requete = (Request) sockIn.readObject();
-                ArrayList<P2PFile> currentSearch = new ArrayList<P2PFile>();
                 String commande = requete.getCommande();
 
                 switch (commande) {
-                    case "list":
-                    	currentSearchArray = new P2PFile[currentSearch.size()];
-                        currentSearch.toArray(currentSearchArray);
-                        
-                        sockOs.writeObject(currentSearchArray);
-                        sockOs.flush();
-                        break;
-
                     case "help":
                         sockOs.writeUTF(" search <pattern> \n get <num> \n list \n local list \n quit");
                         sockOs.flush();
@@ -85,12 +76,17 @@ public class ThreadServer extends Thread {
                         String motif = requete.getArg();
                         HashMap<P2PFile, ArrayList<SocketAddress>> listFiles = lfs.getListFiles();
 
+                        ArrayList<P2PFile> currentSearch = new ArrayList<P2PFile>();
+
                         for (Entry<P2PFile, ArrayList<SocketAddress>> mapentry : listFiles.entrySet()) {
                             P2PFile file = mapentry.getKey();
                             String nameFile = file.getNameFile();
-                            if (nameFile.indexOf(motif) != -1) {
+                            if (nameFile.contains(motif)) {
                                 currentSearch.add(file);
                             }
+//                            if (nameFile.indexOf(motif) != -1) {
+//                                currentSearch.add(file);
+//                            }
                         }
 
                         currentSearchArray = new P2PFile[currentSearch.size()];

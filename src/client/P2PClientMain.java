@@ -62,7 +62,7 @@ public class P2PClientMain {
 			ipHoteHeberge = printAllIP(false);
 
 			if (Objects.equals(ipHoteHeberge.getHostAddress(), ipServ)){
-				System.out.println("\nAdresse IP " + ipServ + " de ma machine (qui n'est pas une adresse de bouclage) : ");
+				System.out.println("\nAdresse IP " + ipServ + " de ma machine (qui n'est pas une adresse de bouclage).\nTerminal Application : ");
 			} else {
 				System.out.println("\nAdresse IP " + ipServ + " ne correspond a aucune adresse valide.");
 				System.exit(0);
@@ -95,24 +95,19 @@ public class P2PClientMain {
 						Request requete = new Request(saisie);
 						if (requete.getCommande().equals("local")) {
 							System.out.println(listFiles.toString());
+						} else if (requete.getCommande().equals("list")) {
+							//il n'y a pas besoin d'envoyer la requet list car elle et automatiquement enregistrer apres un 'search'
+							if (currentSearch == null || currentSearch.length == 0) {
+								System.out.println("La liste des résultats est vide");
+							} else {
+								System.out.println(P2PFunctions.printSearch(currentSearch));
+							}
 						} else {
 							sockOs.writeObject(requete);
 							sockOs.flush();
 							String commande = requete.getCommande();
-							
-							switch (commande) {
-								case "list":
-                                    if (currentSearch != null) {
-                                        if (currentSearch.length == 0) {
-                                            System.out.println("La liste des résultats est vide");
-                                        } else {
-                                            System.out.println(P2PFunctions.printSearch(currentSearch));
-                                        }
-                                    }else {
-                                        System.out.println("la liste de résultats de recherche courante n'existe pas encore. \nveuiller l'initialiser.");
-                                    }
-                                    break;
 
+							switch (commande) {
 								case "help":
 									String reponse = sockIn.readUTF();
 									System.out.println(reponse);
@@ -139,10 +134,10 @@ public class P2PClientMain {
 										System.out.println(P2PFunctions.printSearch(currentSearch));
 									}
 									break;
-									
+
 								case "quit":
 									throw new EndConnectionException();
-							
+
 								default:
 									System.out.println("Erreur de requête");
 									break;
