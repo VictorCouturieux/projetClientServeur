@@ -71,6 +71,9 @@ public class P2PClientMain {
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
 
+
+
+
 			//On crée la socket qui se connecte au serveur
 			sockComm = new Socket(ipServ, portServ);
 
@@ -95,13 +98,6 @@ public class P2PClientMain {
 						Request requete = new Request(saisie);
 						if (requete.getCommande().equals("local")) {
 							System.out.println(listFiles.toString());
-						} else if (requete.getCommande().equals("list")) {
-							//il n'y a pas besoin d'envoyer la requet list car elle et automatiquement enregistrer apres un 'search'
-							if (currentSearch == null || currentSearch.length == 0) {
-								System.out.println("La liste des résultats est vide");
-							} else {
-								System.out.println(P2PFunctions.printSearch(currentSearch));
-							}
 						} else {
 							sockOs.writeObject(requete);
 							sockOs.flush();
@@ -113,17 +109,19 @@ public class P2PClientMain {
 									System.out.println(reponse);
 									break;
 
+								case "list":
+									String reponseList = sockIn.readUTF();
+									System.out.println(reponseList);
+									break;
+
                                 case "get":
-
-
-
-
+									System.out.println("voici la liste des hebergeurs de ce fichier :");
+									String reponseGet = sockIn.readUTF();
+									System.out.println(reponseGet);
 
                                     //// - Permet la lecture dans un fichier d'accès aléatoire.
                                     //// - Un fichier d'accès aléatoire se comporte comme un grand nombre d'octets stockés dans le système de fichiers.
-
 //                                    RandomAccessFile outFile = new RandomAccessFile(repository.getAbsolutePath() + nomFich,"r" ); // création du fichier en lecture
-
                                     break;
 
 								case "search":

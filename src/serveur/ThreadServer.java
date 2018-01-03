@@ -16,7 +16,8 @@ import java.util.Map.Entry;
 
 import client.ListFilesClient;
 import client.Request;
-import comServCli.P2PFile;;
+import comServCli.P2PFile;
+import comServCli.P2PFunctions;;
 
 public class ThreadServer extends Thread {
 
@@ -60,7 +61,7 @@ public class ThreadServer extends Thread {
             System.out.print(lfs.toString());
 
             Request requete;
-            P2PFile[] currentSearchArray = null;
+            P2PFile[] currentSearchArray = new P2PFile[0];
 
             while (true){
                 requete = (Request) sockIn.readObject();
@@ -95,12 +96,36 @@ public class ThreadServer extends Thread {
                         sockOs.writeObject(currentSearchArray);
                         sockOs.flush();
                         break;
-                    
+
+
+                    case "list":
+                        if (currentSearchArray.length == 0) {
+                            sockOs.writeUTF("La liste des résultats est vide");
+                            sockOs.flush();
+                        } else {
+                            sockOs.writeUTF(P2PFunctions.printSearch(currentSearchArray));
+                            sockOs.flush();
+                        }
+                        break;
+
                     case "quit":
                     	lfs.deleteClient(lfc, sockComm.getRemoteSocketAddress());
                         break;
 
                     case "get":
+                        int num = Integer.parseInt(requete.getArg());
+                        P2PFile downThisFile = currentSearchArray[num-1];
+
+                        listFiles = lfs.getListFiles();
+
+                        ArrayList<SocketAddress> listAdress = listFiles.get(downThisFile);
+
+                        SocketAddress[] tblListAdress = new SocketAddress[listAdress.size()];
+                        listAdress.toArray(tblListAdress);
+
+                        sockOs.writeUTF(P2PFunctions.printGetListAdress(tblListAdress));
+                        sockOs.flush();
+
 
                         break;
 
