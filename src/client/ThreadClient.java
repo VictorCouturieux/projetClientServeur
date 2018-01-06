@@ -1,14 +1,14 @@
 package client;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ThreadClient extends Thread {
 
+    private ServerSocket servSock = null;
     private Socket sockComm = null;
+    private ThreadSender threadSender;
 
     private ListFilesClient lfc = null;
 
@@ -18,16 +18,34 @@ public class ThreadClient extends Thread {
     ObjectInputStream sockIn = null;
     ObjectOutputStream sockOs = null;
 
-    public ThreadClient(Socket sockComm, ListFilesClient lfc) {
-        this.sockComm = sockComm;
+    public ThreadClient(ServerSocket servSock, ListFilesClient lfc) {
+        this.servSock = servSock;
         this.lfc = lfc;
     }
 
-    public Socket getSockComm() { return sockComm; }
-    public void setSockComm(Socket sockComm) { this.sockComm = sockComm; }
+    public ListFilesClient getLfc() { return lfc; }
+    public void setLfc(ListFilesClient lfc) { this.lfc = lfc; }
 
     public void run() {
-        
+        try {
+            while (true){
+                sockComm = servSock.accept();
+                threadSender = new ThreadSender(lfc);
+                threadSender.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (sockComm != null)
+                    sockComm.close();
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+                System.out.println("Erreur IO2");
+            }
+        }
     }
 
 

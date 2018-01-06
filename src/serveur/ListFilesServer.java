@@ -44,7 +44,7 @@ public class ListFilesServer {
 	
 	public String toString() {
 		if (listFiles.isEmpty()) {
-			return "La liste de fichiers est vide";
+			return "La liste de fichiers est vide\n";
 		}
 		else {
 			String print = "";

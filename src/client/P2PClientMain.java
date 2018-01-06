@@ -21,6 +21,7 @@ public class P2PClientMain {
 		Socket sockComm = null;
 		ObjectOutputStream sockOs = null;
 		ObjectInputStream sockIn = null;
+		ThreadClient tc = null;
 
         InetAddress ipHoteHeberge = null;
 		
@@ -70,7 +71,8 @@ public class P2PClientMain {
 
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
-
+			tc = new ThreadClient(sockConn, listFiles);
+			tc.start();
 
 
 
@@ -85,7 +87,7 @@ public class P2PClientMain {
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
 
-			P2PFile [] currentSearch = null;
+			P2PFile [] currentSearch = new P2PFile[0];
 
 			String saisie = null;
 			do {
@@ -115,9 +117,25 @@ public class P2PClientMain {
 									break;
 
                                 case "get":
-									System.out.println("voici la liste des hebergeurs de ce fichier :");
-									String reponseGet = sockIn.readUTF();
-									System.out.println(reponseGet);
+									int num = Integer.parseInt(requete.getArg());
+									P2PFile downThisFile = currentSearch[num-1];
+
+									if (!listFiles.getListFiles().contains(downThisFile)){
+										sockOs.writeUTF("valide");
+										sockOs.flush();
+
+										SocketAddress[] tblListAdress = (SocketAddress[]) sockIn.readObject();
+										System.out.println("Voici la liste des hebergeurs de ce fichier :");
+										System.out.println(P2PFunctions.printGetListAdress(tblListAdress));
+
+
+
+
+
+									}else {
+										System.out.println("\nVous posseder deja ce fichiers dans votre banque de fichier.\n");
+									}
+
 
                                     //// - Permet la lecture dans un fichier d'accès aléatoire.
                                     //// - Un fichier d'accès aléatoire se comporte comme un grand nombre d'octets stockés dans le système de fichiers.
@@ -156,9 +174,15 @@ public class P2PClientMain {
 			e.printStackTrace();
 		} catch (EndConnectionException e) {
 			System.out.println("Fermeture de l'application");
+
 		}
 		finally {
 			try {
+
+				if (tc != null) {
+					tc.stop();
+				}
+
 				if (sockOs != null){
 					sockOs.close();
 				}
@@ -169,6 +193,10 @@ public class P2PClientMain {
 				
 				if (sockComm != null){
 					sockComm.close();
+				}
+
+				if (sockConn != null){
+					sockConn.close();
 				}
 			}
 			catch(IOException e) {

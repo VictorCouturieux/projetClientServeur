@@ -13,6 +13,7 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import client.ListFilesClient;
 import client.Request;
@@ -113,20 +114,22 @@ public class ThreadServer extends Thread {
                         break;
 
                     case "get":
-                        int num = Integer.parseInt(requete.getArg());
-                        P2PFile downThisFile = currentSearchArray[num-1];
 
-                        listFiles = lfs.getListFiles();
+                        String valide = sockIn.readUTF();
+                        if (Objects.equals(valide, "valide")){
+                            int num = Integer.parseInt(requete.getArg());
+                            P2PFile downThisFile = currentSearchArray[num-1];
 
-                        ArrayList<SocketAddress> listAdress = listFiles.get(downThisFile);
+                            listFiles = lfs.getListFiles();
 
-                        SocketAddress[] tblListAdress = new SocketAddress[listAdress.size()];
-                        listAdress.toArray(tblListAdress);
+                            ArrayList<SocketAddress> listAdress = listFiles.get(downThisFile);
 
-                        sockOs.writeUTF(P2PFunctions.printGetListAdress(tblListAdress));
-                        sockOs.flush();
+                            SocketAddress[] tblListAdress = new SocketAddress[listAdress.size()];
+                            listAdress.toArray(tblListAdress);
 
-
+                            sockOs.writeObject(tblListAdress);
+                            sockOs.flush();
+                        }
                         break;
 
                     default:
