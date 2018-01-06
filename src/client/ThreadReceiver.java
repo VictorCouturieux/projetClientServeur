@@ -39,6 +39,8 @@ public class ThreadReceiver extends Thread  {
             sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
             sockOs.flush();
 
+            System.out.println(file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+
 
 
 

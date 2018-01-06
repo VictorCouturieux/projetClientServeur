@@ -22,6 +22,7 @@ public class P2PClientMain {
 		ObjectOutputStream sockOs = null;
 		ObjectInputStream sockIn = null;
 		ThreadClient tc = null;
+		ThreadReceiver tr = null;
 
         InetAddress ipHoteHeberge = null;
 		
@@ -128,9 +129,28 @@ public class P2PClientMain {
 										System.out.println("Voici la liste des hebergeurs de ce fichier :");
 										System.out.println(P2PFunctions.printGetListAdress(tblListAdress));
 
+										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\n nb addr : " + tblListAdress.length );
+
+										for (int i = 0; i < tblListAdress.length; i++){
+											System.out.println("lancement du tread vers : " + tblListAdress[i].toString());
+
+											InetAddress iAdd = InetAddress.getByName(tblListAdress[i].toString().split("/")[1].split(":")[0]);
+//											System.out.println(iAdd.getHostAddress());
+											int portAdd = Integer.parseInt(tblListAdress[i].toString().split("/")[1].split(":")[1]);
+//											System.out.println(portAdd);
+
+											double morceau = (double) downThisFile.getSizeFile() / 1024;
+
+											System.out.println(morceau);
+											System.out.println( (int) Math.ceil(morceau));
 
 
+											int preMorceauInclu = 0;
+											int derMorceauExclu = 0;
 
+//											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, preMorceauInclu, derMorceauExclu);
+//											tr.start();
+										}
 
 									}else {
 										System.out.println("\nVous posseder deja ce fichiers dans votre banque de fichier.\n");
