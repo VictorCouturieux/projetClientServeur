@@ -74,7 +74,7 @@ public class P2PClientMain {
 
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
-			tc = new ThreadClient(sockConn, listFiles);
+			tc = new ThreadClient(sockConn, listFiles, repository.getAbsolutePath());
 			tc.start();
 			System.out.println("port : " + sockConn.getLocalPort());
 
@@ -133,7 +133,10 @@ public class P2PClientMain {
 
 										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\n nb addr : " + tblListAdress.length );
 
-										for (int i = 0; i < tblListAdress.length; i++){
+                                        RandomAccessFile fileCreated = new RandomAccessFile ( repository.getAbsolutePath() + downThisFile.getNameFile(),"rw" ); //on creer le fichier sur le disque dur
+
+
+                                        for (int i = 0; i < tblListAdress.length; i++){
 											System.out.println("\nlancement du tread vers : " + tblListAdress[i].toString());
 
 											InetAddress iAdd = InetAddress.getByName(tblListAdress[i].toString().split("/")[1].split(":")[0]);
@@ -157,8 +160,12 @@ public class P2PClientMain {
 											int derMorceauExclu = partageMorceaux * (i+1) - 1;
 //											System.out.println("dern morceau exclu : " + derMorceauExclu);
 
-											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, preMorceauInclu, derMorceauExclu);
+											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, fileCreated, preMorceauInclu, derMorceauExclu);
 											tr.start();
+
+
+											// pencer à dire au serveur que vous avez un nouveau fichier
+
 										}
 
 									}else {
@@ -166,9 +173,6 @@ public class P2PClientMain {
 									}
 
 
-                                    //// - Permet la lecture dans un fichier d'accès aléatoire.
-                                    //// - Un fichier d'accès aléatoire se comporte comme un grand nombre d'octets stockés dans le système de fichiers.
-//                                    RandomAccessFile outFile = new RandomAccessFile(repository.getAbsolutePath() + nomFich,"r" ); // création du fichier en lecture
                                     break;
 
 								case "search":

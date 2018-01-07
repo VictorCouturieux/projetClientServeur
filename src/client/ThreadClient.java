@@ -12,15 +12,18 @@ public class ThreadClient extends Thread {
 
     private ListFilesClient lfc = null;
 
+    private String pathFile;
+
     private InputStream ins = null;
     private OutputStream outs = null;
 
     ObjectInputStream sockIn = null;
     ObjectOutputStream sockOs = null;
 
-    public ThreadClient(ServerSocket servSock, ListFilesClient lfc) {
+    public ThreadClient(ServerSocket servSock, ListFilesClient lfc, String pathFile) {
         this.servSock = servSock;
         this.lfc = lfc;
+        this.pathFile = pathFile;
     }
 
     public ListFilesClient getLfc() { return lfc; }
@@ -30,7 +33,7 @@ public class ThreadClient extends Thread {
         try {
             while (true){
                 sockComm = servSock.accept();
-                threadSender = new ThreadSender(lfc);
+                threadSender = new ThreadSender(sockComm, lfc, pathFile);
                 threadSender.start();
             }
         } catch (IOException e) {
