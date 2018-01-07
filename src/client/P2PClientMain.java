@@ -70,15 +70,17 @@ public class P2PClientMain {
 				System.exit(0);
 			}
 
+
+
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
 			tc = new ThreadClient(sockConn, listFiles);
 			tc.start();
-
-
+			System.out.println("port : " + sockConn.getLocalPort());
 
 			//On crée la socket qui se connecte au serveur
 			sockComm = new Socket(ipServ, portServ);
+			System.out.println("port : " + sockComm.getLocalPort());
 
 			//On instancie les flux
 			sockIn = new ObjectInputStream(new BufferedInputStream(sockComm.getInputStream()));
@@ -132,24 +134,31 @@ public class P2PClientMain {
 										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\n nb addr : " + tblListAdress.length );
 
 										for (int i = 0; i < tblListAdress.length; i++){
-											System.out.println("lancement du tread vers : " + tblListAdress[i].toString());
+											System.out.println("\nlancement du tread vers : " + tblListAdress[i].toString());
 
 											InetAddress iAdd = InetAddress.getByName(tblListAdress[i].toString().split("/")[1].split(":")[0]);
 //											System.out.println(iAdd.getHostAddress());
 											int portAdd = Integer.parseInt(tblListAdress[i].toString().split("/")[1].split(":")[1]);
 //											System.out.println(portAdd);
 
-											double morceau = (double) downThisFile.getSizeFile() / 1024;
+											double morceaux = (double) downThisFile.getSizeFile() / 1024;
+//											System.out.println("nb morceaux : " + morceaux);
+//											System.out.println("nb moraceaux arrond sup : " + (int) Math.ceil(morceaux));
 
-											System.out.println(morceau);
-											System.out.println( (int) Math.ceil(morceau));
+											double partageMorceauxD = (double) ( Math.ceil(morceaux) / tblListAdress.length );
+//											System.out.println("taille du partage arondi supp : " + partageMorceauxD);
 
+											int partageMorceaux = (int) Math.ceil( partageMorceauxD )  ;
+//											System.out.println("taille du partage arondi supp : " + partageMorceaux);
 
-											int preMorceauInclu = 0;
-											int derMorceauExclu = 0;
+											int preMorceauInclu = partageMorceaux * (i+1) - partageMorceaux;
+//											System.out.println("prem morceau inclu : " + preMorceauInclu);
 
-//											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, preMorceauInclu, derMorceauExclu);
-//											tr.start();
+											int derMorceauExclu = partageMorceaux * (i+1) - 1;
+//											System.out.println("dern morceau exclu : " + derMorceauExclu);
+
+											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, preMorceauInclu, derMorceauExclu);
+											tr.start();
 										}
 
 									}else {

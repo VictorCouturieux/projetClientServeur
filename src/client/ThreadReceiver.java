@@ -17,8 +17,8 @@ public class ThreadReceiver extends Thread  {
     private int preMorceauInclu;
      private int derMorceauExclu;
 
-    Socket sockComm = null;
-    ObjectOutputStream sockOs = null;
+    private Socket sockComm = null;
+    private ObjectOutputStream sockOs = null;
 
     DatagramPacket pkRequete = null;
     DatagramPacket pkRequeteResseve = null;
@@ -34,12 +34,15 @@ public class ThreadReceiver extends Thread  {
     }
 
     public void run() {
+
+        System.out.println(address.getHostAddress() + ":" + port + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+
         try {
-            sockComm = new Socket(address, port);
+            sockComm = new Socket(address.getHostAddress(), port);
             sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
             sockOs.flush();
 
-            System.out.println(file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+
 
 
 
