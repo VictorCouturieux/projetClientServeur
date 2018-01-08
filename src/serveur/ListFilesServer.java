@@ -12,8 +12,11 @@ import comServCli.P2PFile;
  * Created by ctx on 04/12/17.
  */
 public class ListFilesServer {
-	
+
+
+
 	private HashMap<P2PFile, ArrayList<SocketAddress>> listFiles;
+	private HashMap<SocketAddress, Integer> listPortServeurSocket;
 
 	public ListFilesServer() {
 		this.listFiles = new HashMap<P2PFile, ArrayList<SocketAddress>>();
