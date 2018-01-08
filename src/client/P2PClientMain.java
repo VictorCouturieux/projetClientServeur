@@ -90,6 +90,9 @@ public class P2PClientMain {
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
 
+			sockOs.writeInt(sockConn.getLocalPort());
+			sockOs.flush();
+
 			P2PFile [] currentSearch = new P2PFile[0];
 
 			String saisie = null;
