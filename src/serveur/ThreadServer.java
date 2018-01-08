@@ -130,6 +130,14 @@ public class ThreadServer extends Thread {
 
                             sockOs.writeObject(tblListAdress);
                             sockOs.flush();
+
+                            int[] tblPortSocketServeur = lfs.createArrayNumberPort(listAdress);
+
+                            sockOs.writeObject(tblPortSocketServeur);
+                            sockOs.flush();
+
+                            //mettre a jour la map de fichier
+
                         }
                         break;
 

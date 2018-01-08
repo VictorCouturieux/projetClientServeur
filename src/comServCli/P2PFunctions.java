@@ -16,12 +16,13 @@ public class P2PFunctions {
 		return print;
 	}
 
-	public static String printGetListAdress(SocketAddress[] listAdress) {
+	public static String printGetListAdress(SocketAddress[] listAdress, int[] tblPortSocketServeur) {
 		String print = "";
 		int count = 1;
 
 		for (int i = 0; i < listAdress.length; i++){
-			print += count + " " + listAdress[i].toString() + "\n";
+			print += count + " " + listAdress[i].toString() + "\n" +
+				"\tport Socket Serveur" + tblPortSocketServeur[i];
 			count++;
 		}
 

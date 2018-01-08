@@ -58,16 +58,16 @@ public class ThreadReceiver extends Thread  {
 
             long totalOctet = 0;
 
-            if (derMorceauExclu - preMorceauInclu != 0){
-                do{
-                    pkRequeteReceive = new DatagramPacket(bufRequete, bufRequete.length);
-                    datagramSocketComm.receive(pkRequeteReceive);
-
-                    fileCreated.write(bufRequete, preMorceauInclu, derMorceauExclu - preMorceauInclu);
-
-                    totalOctet += bufRequete.length;
-                }while (totalOctet <= derMorceauExclu - preMorceauInclu);
-            }
+//            if (derMorceauExclu - preMorceauInclu != 0){
+//                do{
+//                    pkRequeteReceive = new DatagramPacket(bufRequete, bufRequete.length);
+//                    datagramSocketComm.receive(pkRequeteReceive);
+//
+//                    fileCreated.write(bufRequete, preMorceauInclu, derMorceauExclu - preMorceauInclu);
+//
+//                    totalOctet += bufRequete.length;
+//                }while (totalOctet <= derMorceauExclu - preMorceauInclu);
+//            }
 
         } catch (IOException e) {
             e.printStackTrace();

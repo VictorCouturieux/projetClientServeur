@@ -131,8 +131,11 @@ public class P2PClientMain {
 										sockOs.flush();
 
 										SocketAddress[] tblListAdress = (SocketAddress[]) sockIn.readObject();
+
+										int[] tblPortSocketServeur = (int[]) sockIn.readObject();
+
 										System.out.println("Voici la liste des hebergeurs de ce fichier :");
-										System.out.println(P2PFunctions.printGetListAdress(tblListAdress));
+										System.out.println(P2PFunctions.printGetListAdress(tblListAdress, tblPortSocketServeur));
 
 										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\n nb addr : " + tblListAdress.length );
 
@@ -144,7 +147,8 @@ public class P2PClientMain {
 
 											InetAddress iAdd = InetAddress.getByName(tblListAdress[i].toString().split("/")[1].split(":")[0]);
 //											System.out.println(iAdd.getHostAddress());
-											int portAdd = Integer.parseInt(tblListAdress[i].toString().split("/")[1].split(":")[1]);
+//											Integer.parseInt(tblListAdress[i].toString().split("/")[1].split(":")[1]);
+											int portAdd = tblPortSocketServeur[i];
 //											System.out.println(portAdd);
 
 											double morceaux = (double) downThisFile.getSizeFile() / 1024;

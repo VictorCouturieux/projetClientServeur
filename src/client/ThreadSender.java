@@ -31,26 +31,27 @@ public class ThreadSender extends Thread {
     public void run() {
         try {
             sockIn = new ObjectInputStream(new BufferedInputStream(sockComm.getInputStream()));
-            String info = sockIn.readUTF();
+//            String info = sockIn.readUTF();
+//
+//            outFile = new RandomAccessFile( pathFile + info.split(":")[1],"r" );
+//
+//            datagramSocketComm = new DatagramSocket();
+//            InetAddress ip = InetAddress.getByName("");
+//
+//            bufRequete = new byte[1024];
+//            int amount;
+//            while ((amount = outFile.read(bufRequete,
+//                    Integer.parseInt(info.split(":")[3]),
+//                    Integer.parseInt(info.split(":")[4]) - Integer.parseInt(info.split(":")[3]) )) != 0){
+//
+//
+//
+//                pkRequeteSend = new DatagramPacket(bufRequete, bufRequete.length, ip,  Integer.parseInt(info.split(":")[0]));
+//                datagramSocketComm.send(pkRequeteSend);
+////                pkRequeteSend.setData(bufRequete);
+//
+//            }
 
-            outFile = new RandomAccessFile( pathFile + info.split(":")[1],"r" );
-
-            datagramSocketComm = new DatagramSocket();
-            InetAddress ip = InetAddress.getByName("");
-
-            bufRequete = new byte[1024];
-            int amount;
-            while ((amount = outFile.read(bufRequete,
-                    Integer.parseInt(info.split(":")[3]),
-                    Integer.parseInt(info.split(":")[4]) - Integer.parseInt(info.split(":")[3]) )) != 0){
-
-
-
-                pkRequeteSend = new DatagramPacket(bufRequete, bufRequete.length, ip,  Integer.parseInt(info.split(":")[0]));
-                datagramSocketComm.send(pkRequeteSend);
-//                pkRequeteSend.setData(bufRequete);
-
-            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
