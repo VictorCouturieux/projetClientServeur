@@ -13,22 +13,26 @@ import comServCli.P2PFile;
  */
 public class ListFilesServer {
 
-
-
 	private HashMap<P2PFile, ArrayList<SocketAddress>> listFiles;
 	private HashMap<SocketAddress, Integer> listPortServeurSocket;
 
 	public ListFilesServer() {
 		this.listFiles = new HashMap<P2PFile, ArrayList<SocketAddress>>();
+		this.listPortServeurSocket = new HashMap<SocketAddress, Integer>();
 	}
 	
-	public void addListFiles(ListFilesClient lfc, SocketAddress sa) {
+	public void addListFiles(ListFilesClient lfc, SocketAddress sa, int portNumber) {
 		for (P2PFile p2pFile : lfc.getListFiles()) {
 			if (!listFiles.containsKey(p2pFile)) {
 				ArrayList<SocketAddress> listSA = new ArrayList<SocketAddress>();
 				listFiles.put(p2pFile, listSA);
 			}
 			listFiles.get(p2pFile).add(sa);
+			
+			if(!listPortServeurSocket.containsKey(sa)) {
+				Integer port = new Integer(portNumber);
+				listPortServeurSocket.put(sa, port);
+			}
 		}
 	}
 	
@@ -43,6 +47,18 @@ public class ListFilesServer {
 				}
 			}
 		}
+	}
+	
+	public int[] createArrayNumberPort(ArrayList<SocketAddress> listSa) {
+		int [] numberPortArray = new int [listSa.size()];
+		int i = 0;
+		
+		for (SocketAddress sa : listSa) {
+			numberPortArray[i] = listPortServeurSocket.get(sa);
+			i++;
+		}
+		
+		return numberPortArray;
 	}
 	
 	public String toString() {
