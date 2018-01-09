@@ -22,7 +22,7 @@ public class P2PFunctions {
 
 		for (int i = 0; i < listAdress.length; i++){
 			print += count + " " + listAdress[i].toString() + "\n" +
-				"\tport Socket Serveur" + tblPortSocketServeur[i];
+				"\tport Socket Serveur" + tblPortSocketServeur[i] + "\n";
 			count++;
 		}
 

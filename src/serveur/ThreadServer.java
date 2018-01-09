@@ -137,6 +137,7 @@ public class ThreadServer extends Thread {
                             sockOs.flush();
 
                             //mettre a jour la map de fichier
+                            lfs.addFilesCreated(downThisFile, sockComm.getRemoteSocketAddress());
 
                         }
                         break;

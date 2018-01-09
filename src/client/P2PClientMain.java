@@ -74,7 +74,7 @@ public class P2PClientMain {
 
 			//On crée la socket d'écoute du serveur
 			sockConn = new ServerSocket(0);
-			tc = new ThreadClient(sockConn, listFiles, repository.getAbsolutePath());
+			tc = new ThreadClient(sockConn, listFiles, repository.getAbsolutePath() + "/" );
 			tc.start();
 			System.out.println("port : " + sockConn.getLocalPort());
 
@@ -137,9 +137,9 @@ public class P2PClientMain {
 										System.out.println("Voici la liste des hebergeurs de ce fichier :");
 										System.out.println(P2PFunctions.printGetListAdress(tblListAdress, tblPortSocketServeur));
 
-										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\n nb addr : " + tblListAdress.length );
+										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\nnb addr : " + tblListAdress.length );
 
-                                        RandomAccessFile fileCreated = new RandomAccessFile ( repository.getAbsolutePath() + downThisFile.getNameFile(),"rw" ); //on creer le fichier sur le disque dur
+                                        RandomAccessFile fileCreated = new RandomAccessFile ( repository.getAbsolutePath() + "/" + downThisFile.getNameFile(),"rw" ); //on creer le fichier sur le disque dur
 
 
                                         for (int i = 0; i < tblListAdress.length; i++){
@@ -148,32 +148,30 @@ public class P2PClientMain {
 											InetAddress iAdd = InetAddress.getByName(tblListAdress[i].toString().split("/")[1].split(":")[0]);
 //											System.out.println(iAdd.getHostAddress());
 //											Integer.parseInt(tblListAdress[i].toString().split("/")[1].split(":")[1]);
-											int portAdd = tblPortSocketServeur[i];
 //											System.out.println(portAdd);
 
 											double morceaux = (double) downThisFile.getSizeFile() / 1024;
-//											System.out.println("nb morceaux : " + morceaux);
-//											System.out.println("nb moraceaux arrond sup : " + (int) Math.ceil(morceaux));
+											System.out.println("nb morceaux : " + morceaux);
+											System.out.println("nb moraceaux arrond sup : " + (int) Math.ceil(morceaux));
 
 											double partageMorceauxD = (double) ( Math.ceil(morceaux) / tblListAdress.length );
-//											System.out.println("taille du partage arondi supp : " + partageMorceauxD);
+											System.out.println("taille du partage arondi supp : " + partageMorceauxD);
 
 											int partageMorceaux = (int) Math.ceil( partageMorceauxD )  ;
-//											System.out.println("taille du partage arondi supp : " + partageMorceaux);
+											System.out.println("taille du partage arondi supp : " + partageMorceaux);
 
 											int preMorceauInclu = partageMorceaux * (i+1) - partageMorceaux;
-//											System.out.println("prem morceau inclu : " + preMorceauInclu);
+											System.out.println("prem morceau inclu : " + preMorceauInclu);
 
 											int derMorceauExclu = partageMorceaux * (i+1) - 1;
-//											System.out.println("dern morceau exclu : " + derMorceauExclu);
+											System.out.println("dern morceau exclu : " + derMorceauExclu);
 
-											tr = new ThreadReceiver(iAdd, portAdd, downThisFile, fileCreated, preMorceauInclu, derMorceauExclu);
+											tr = new ThreadReceiver(iAdd, tblPortSocketServeur[i], downThisFile, fileCreated, preMorceauInclu, derMorceauExclu);
 											tr.start();
-
-
-											// pencer à dire au serveur que vous avez un nouveau fichier
-
+											tr.join();
 										}
+										// mettre a jour la liste de fichier du client
+										listFiles.addFilesCreated(downThisFile);
 
 									}else {
 										System.out.println("\nVous posseder deja ce fichiers dans votre banque de fichier.\n");
@@ -202,6 +200,8 @@ public class P2PClientMain {
 					}
 				} catch (IllegalArgumentException e) {
 					System.out.println(e.getMessage());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			} while (saisie.length() != 0);
 

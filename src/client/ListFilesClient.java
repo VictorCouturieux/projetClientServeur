@@ -2,6 +2,7 @@ package client;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 
 import comServCli.P2PFile;
@@ -28,6 +29,10 @@ public class ListFilesClient implements Serializable {
 
 	public void setListFiles(ArrayList<P2PFile> listFiles) {
 		this.listFiles = listFiles;
+	}
+
+	public void addFilesCreated(P2PFile p2pFile){
+		this.listFiles.add(p2pFile);
 	}
 
 	@Override

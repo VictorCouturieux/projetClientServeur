@@ -35,6 +35,10 @@ public class ListFilesServer {
 			}
 		}
 	}
+
+	public void addFilesCreated(P2PFile p2pFile, SocketAddress sa){
+		listFiles.get(p2pFile).add(sa);
+	}
 	
 	public void deleteClient(ListFilesClient lfc, SocketAddress sa) {
 		for (P2PFile p2pFile : lfc.getListFiles()) {
@@ -77,7 +81,9 @@ public class ListFilesServer {
 			return print;
 		}
 	}
-	
+
+
+
 	public HashMap<P2PFile, ArrayList<SocketAddress>> getListFiles() {
 		return listFiles;
 	}

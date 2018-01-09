@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.net.*;
+import java.util.Arrays;
 
 public class ThreadReceiver extends Thread  {
 
@@ -43,9 +44,9 @@ public class ThreadReceiver extends Thread  {
 
 
         try {
-//            sockComm = new Socket(address.getHostAddress(), port);
-//            sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
-//            sockOs.flush();
+            sockComm = new Socket(address.getHostAddress(), portTCP);
+            sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
+            sockOs.flush();
 
 
             datagramSocketComm = new DatagramSocket();
@@ -54,20 +55,30 @@ public class ThreadReceiver extends Thread  {
             System.out.println(address.getHostAddress() + ":" + portTCP + ":" + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
 
             System.out.println("requete envoyer : " + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+            sockOs.writeUTF(portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+            sockOs.flush();
+
             bufRequete = new byte[1024];
 
-            long totalOctet = 0;
+            int count = 0;
+            int amount;
 
-//            if (derMorceauExclu - preMorceauInclu != 0){
-//                do{
-//                    pkRequeteReceive = new DatagramPacket(bufRequete, bufRequete.length);
-//                    datagramSocketComm.receive(pkRequeteReceive);
-//
-//                    fileCreated.write(bufRequete, preMorceauInclu, derMorceauExclu - preMorceauInclu);
-//
-//                    totalOctet += bufRequete.length;
-//                }while (totalOctet <= derMorceauExclu - preMorceauInclu);
-//            }
+            if (derMorceauExclu - preMorceauInclu > 0){
+                do{
+                    pkRequeteReceive = new DatagramPacket(bufRequete, bufRequete.length);
+                    datagramSocketComm.receive(pkRequeteReceive);
+
+                    fileCreated.seek((preMorceauInclu + count)*1024);
+
+                    fileCreated.write(bufRequete);
+
+                    System.out.println(((preMorceauInclu + count)*1024) + " / " +( file.getSizeFile() - (derMorceauExclu - preMorceauInclu) ) );
+//                    System.out.println(Arrays.toString(bufRequete));
+
+                    count++;
+
+                }while (count < derMorceauExclu - preMorceauInclu);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
