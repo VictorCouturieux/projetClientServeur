@@ -12,6 +12,11 @@ public class P2PFile implements Serializable {
 	private String nameFile;
 	private long sizeFile;
 	
+	/**
+	 * Un P2PFile est un objet décrivant un fichier, pour le créer, nous utilisons un objet File et nous récupérons son nom et sa taille pour affecter des valeurs aux attributs du P2PFile
+	 * 
+	 * @param file : Le fichier à partir duquel on créé le P2PFile
+	 */
 	public P2PFile(File file) {
 		this.nameFile = file.getName();
 		this.sizeFile = file.length();
@@ -33,6 +38,9 @@ public class P2PFile implements Serializable {
 		this.sizeFile = sizeFile;
 	}
 
+	/**
+	 * Les fonctions hashCode et equals ont été générés automatiquement
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

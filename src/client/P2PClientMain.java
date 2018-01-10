@@ -1,12 +1,24 @@
 package client;
 
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
+import java.net.ConnectException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Objects;
-
-import com.sun.istack.internal.FinalArrayList;
 
 import comServCli.P2PFile;
 import comServCli.P2PFunctions;;
@@ -15,6 +27,9 @@ public class P2PClientMain {
 	
 	public static void main(String[] args) {
 		
+		/**
+		 * Initialisation de toutes les variables qui seront utilisées dans le main du client
+		 */
 		String ipServ;
 		int portServ = 0;
 		ServerSocket sockConn = null;
@@ -48,11 +63,15 @@ public class P2PClientMain {
 		
 		File repository = new File(args[2]);
 		
+		//On lève une erreur si le troisième argument de la ligne de commande n'est pas un répertoire
 		if (!repository.isDirectory()) {
 			System.out.println("Le chemin spécifié n'est pas un répertoire, ARRET DE L'APPLICATION");
 			System.exit(1);
 		}
 		
+		/**
+		 * On crée la liste des fichiers à partir du répertoire passé en troisième argument de la ligne de commande
+		 */
 		ListFilesClient listFiles = new ListFilesClient(repository);
 		
 		System.out.println("Fichier que vous posseder :\n" + listFiles);
@@ -60,6 +79,9 @@ public class P2PClientMain {
 
 		try {
 
+			/**
+			 * Affichage des adresses IP différentes des adresses de bouclage
+			 */
 			System.out.println("Adresse de non boulclage disponible :");
 			ipHoteHeberge = printAllIP(false);
 
@@ -70,9 +92,7 @@ public class P2PClientMain {
 				System.exit(0);
 			}
 
-
-
-			//On crée la socket d'écoute du serveur
+			//On crée la socket d'écoute de ce client et on lance le thread de ce client
 			sockConn = new ServerSocket(0);
 			tc = new ThreadClient(sockConn, listFiles, repository.getAbsolutePath() + "/" );
 			tc.start();
@@ -87,12 +107,17 @@ public class P2PClientMain {
 			sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
 			sockOs.flush();
 
+			//On envoie la liste de fichiers que possède ce client au serveur
 			sockOs.writeObject(listFiles);
 			sockOs.flush();
 
+			//On envoie le numéro de port de la socket d'écoute au serveur pour que celui le stocke
 			sockOs.writeInt(sockConn.getLocalPort());
 			sockOs.flush();
 
+			/**
+			 * Partie permettant de gérer l'interpréteur de commande
+			 */
 			P2PFile [] currentSearch = new P2PFile[0];
 
 			String saisie = null;
@@ -100,17 +125,37 @@ public class P2PClientMain {
 				try {
 					System.out.println("-->");
 
+					/**
+					 * Saisie de la commande par le client
+					 */
 					saisie = clavier.readLine();
 
+					/**
+					 * Traitement de la commande si celle-ci n'est pas vide
+					 * 
+					 * Si la commande saisie est "local" alors le client traite lui-même cette commande en affichant sa liste de fichiers
+					 * Dans tous les autres cas un objet Request est créée à partir de la saisie et cet objet est ensuite envoyé au serveur pour qu'il traite la commande
+					 */
 					if (saisie.length() != 0) {
 						Request requete = new Request(saisie);
 						if (requete.getCommande().equals("local")) {
 							System.out.println(listFiles.toString());
 						} else {
+							//Envoi de la requête au serveur
 							sockOs.writeObject(requete);
 							sockOs.flush();
+							
+							//On récupère le premier argument de la commande
 							String commande = requete.getCommande();
 
+							/**
+							 * Pour les commandes "help" et "list", le client récupère une string envoyée par le serveur dans le but d'un affichage
+							 * "help" affiche un message d'aide pour l'utilisation de l'interpréteur de commande
+							 * "list" affiche la liste des fichiers possédés par l'ensemble des clients connectés au serveur
+							 * "get" effectue le téléchargement du fichier téléchargé
+							 * "search" affiche le résultat de la recherche effectuée, après avoir envoyé cette requête au serveur, celui-ci va envoyer un tableau de P2PFile correspondant à la recherche
+							 * "quit" met fin à l'application en levant l'exception EndConnectionException. Lors de la levée de cette exception, le client affiche un message de fermeture
+							 */
 							switch (commande) {
 								case "help":
 									String reponse = sockIn.readUTF();
@@ -219,6 +264,7 @@ public class P2PClientMain {
 		finally {
 			try {
 
+				//Fermeture des différents flux et sockets
 				if (sockConn != null){
 					sockConn.close();
 				}
@@ -247,6 +293,13 @@ public class P2PClientMain {
 		}
 	}
 
+	/**
+	 * Fonction permettant d'afficher toutes les adresses IP disponibles autre que l'adresse de bouclage.
+	 * 
+	 * @param loopBack : Booleen permettant d'indiquer si on inclut l'adresse de bouclage ou non dans l'affichage
+	 * @return L'ensemble des adresses à afficher
+	 * @throws SocketException
+	 */
     private static InetAddress printAllIP(boolean loopBack) throws SocketException {
         Enumeration<NetworkInterface> en = null;
         // Returns all the interfaces on this machine.
@@ -280,5 +333,4 @@ public class P2PClientMain {
         }
 		throw new ExceptionInInitializerError("Vous n'avez pas d'adresse IP");
     }
-
 }

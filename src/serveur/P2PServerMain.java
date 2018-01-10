@@ -12,11 +12,15 @@ public class P2PServerMain {
         ServerSocket servSock = null;
         Socket sockComm = null;
 
+        //On crée une liste de fichier vide
         ListFilesServer lfs = new ListFilesServer();
 
 
         int portServ = 0;
 
+        /**
+         * Vérification des arguments passés en ligne de commande
+         */
         if (args.length != 1 ) {
             System.out.println("Nombre d'arguments incorrect !");
             System.exit(1);
@@ -33,6 +37,7 @@ public class P2PServerMain {
         }
         try {
             servSock = new ServerSocket(portServ); //on creer une nouvelle socket pour le transfert du fichier
+            //On lance le ThreadServer avec la socket et la liste de fichiers
             while (true) {
                 sockComm = servSock.accept();
                 ts = new ThreadServer(sockComm, lfs);

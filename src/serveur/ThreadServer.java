@@ -22,6 +22,9 @@ import comServCli.P2PFunctions;;
 
 public class ThreadServer extends Thread {
 
+	/**
+	 * Initialisation de toutes les variables qui seront utilisées dans ce programme
+	 */
     private Socket sockComm = null;
 
     private ListFilesServer lfs = null;
@@ -47,8 +50,10 @@ public class ThreadServer extends Thread {
     public void run() {
         try {
 
+        	//Affichage d'un message pour montrer que la connexion est initialisée
             System.out.println("Debut de connection avec le client : IP : " + sockComm.getInetAddress() +  " | numero de port :" + sockComm.getPort());
 
+            //Initialisation des flux
             ins = sockComm.getInputStream();
             outs = sockComm.getOutputStream();
 
@@ -56,8 +61,11 @@ public class ThreadServer extends Thread {
             sockOs.flush();
             sockIn = new ObjectInputStream(new BufferedInputStream(ins));
 
+            //Réception de la liste des fichiers et du numéro de port de la socket d'écoute du client qui se connecte au serveur
             ListFilesClient lfc = (ListFilesClient)sockIn.readObject();
             int portSocketServeurNewClient = sockIn.readInt();
+            
+            //Ajout des informations dans la liste des fichiers du serveur
             lfs.addListFiles(lfc, sockComm.getRemoteSocketAddress(), portSocketServeurNewClient);
             
             System.out.print(lfs.toString());
@@ -65,10 +73,25 @@ public class ThreadServer extends Thread {
             Request requete;
             P2PFile[] currentSearchArray = new P2PFile[0];
 
+            /**
+             * Traitement successif de toutes les commandes qu'enverra le client tant que celui-ci ne ferme pas son application
+             */
             while (true){
+            	//Réception de la requête
                 requete = (Request) sockIn.readObject();
                 String commande = requete.getCommande();
 
+                /**
+                 * Traitement de la commande en fonction du premier argument de celle-ci
+                 * 
+                 * "help" : Création et envoi du message d'aide
+                 * "search" : Pour effectuer la recherche, on récupère d'abord la HashMap de possession des fichiers du serveur. 
+                 * 			  On crée ensuite une ArrayList permettant d'accueillir les fichiers correspondant à la recherche.
+                 * 			  On parcourt ensuite la HashMap en parcourant les clés et on regarde si cette clé contient le motif et si c'est le cas, on ajoute le fichier dans l'ArrayList contenant les résultats de la recherche.
+                 * "list" : Envoie au client l'ensemble de la liste des fichiers qu'ils possèdent
+                 * "quit" : Gestion de la déconnexion du client en mettant à jour la liste des fichiers possédé par le serveur
+                 * "get" : 
+                 */
                 switch (commande) {
                     case "help":
                         sockOs.writeUTF(" search <pattern> \n get <num> \n list \n local list \n quit");
@@ -87,9 +110,6 @@ public class ThreadServer extends Thread {
                             if (nameFile.contains(motif)) {
                                 currentSearch.add(file);
                             }
-//                            if (nameFile.indexOf(motif) != -1) {
-//                                currentSearch.add(file);
-//                            }
                         }
 
                         currentSearchArray = new P2PFile[currentSearch.size()];

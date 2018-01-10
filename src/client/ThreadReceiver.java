@@ -1,13 +1,15 @@
 package client;
 
-import comServCli.P2PFile;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
-import java.net.*;
-import java.util.Arrays;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+
+import comServCli.P2PFile;
 
 public class ThreadReceiver extends Thread  {
 

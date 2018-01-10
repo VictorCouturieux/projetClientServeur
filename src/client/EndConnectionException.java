@@ -1,3 +1,7 @@
+/**
+ * Classe permettant de créer une exception particulière qui sera levée lors de la fin d'une connection
+ */
+
 package client;
 
 public class EndConnectionException extends Exception {

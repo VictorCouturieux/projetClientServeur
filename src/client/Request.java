@@ -12,6 +12,12 @@ public class Request implements Serializable {
 	private String commande;
     private String arg;
 
+    /**
+     * Constructeur permettant de créer une requête valide à partir de la commande saisie par l'utilisateur
+     * 
+     * @param req : La commande saisie par le client
+     * @throws IllegalArgumentException : Exception levée si la commande saisie n'est pas conforme au cahier des charges
+     */
     public Request(String req) throws IllegalArgumentException {
 
         if (!Objects.equals(req, "")) {
@@ -53,8 +59,4 @@ public class Request implements Serializable {
     public void setArg(String arg) {
         this.arg = arg;
     }
-
-
-
-
 }
