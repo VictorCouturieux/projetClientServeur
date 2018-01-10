@@ -171,22 +171,37 @@ public class P2PClientMain {
 									int num = Integer.parseInt(requete.getArg());
 									P2PFile downThisFile = currentSearch[num-1];
 
+									/**
+									 * verifie si le client possede deja le fichier
+									 */
 									if (!listFiles.getListFiles().contains(downThisFile)){
 										sockOs.writeUTF("valide");
 										sockOs.flush();
 
+										/**
+										 * recuperation de la liste d'adresses
+										 */
 										SocketAddress[] tblListAdress = (SocketAddress[]) sockIn.readObject();
 
 										int[] tblPortSocketServeur = (int[]) sockIn.readObject();
 
+										/**
+										 * affiche la liste de client qui possede le fichier
+										 */
 										System.out.println("Voici la liste des hebergeurs de ce fichier :");
 										System.out.println(P2PFunctions.printGetListAdress(tblListAdress, tblPortSocketServeur));
-
 										System.out.println( downThisFile.getNameFile() + ":" + downThisFile.getSizeFile() + "\nnb addr : " + tblListAdress.length );
 
+										/**
+										 * création du fichier (vide) dans le repertoire du client
+										 */
                                         RandomAccessFile fileCreated = new RandomAccessFile ( repository.getAbsolutePath() + "/" + downThisFile.getNameFile(),"rw" ); //on creer le fichier sur le disque dur
 
-
+										/**
+										 * demarage de la recuperation des donnée du fichier
+										 * cette boucle traite les autre client possedant le fichier les un apret les autre
+										 * elle ecrit le fichier en fonction du nombre de client possedant le fichier
+										 */
                                         for (int i = 0; i < tblListAdress.length; i++){
 											System.out.println("\nlancement du tread vers : " + tblListAdress[i].toString());
 
@@ -200,7 +215,7 @@ public class P2PClientMain {
 											System.out.println("nb moraceaux arrond sup : " + (int) Math.ceil(morceaux));
 
 											double partageMorceauxD = (double) ( Math.ceil(morceaux) / tblListAdress.length );
-											System.out.println("taille du partage arondi supp : " + partageMorceauxD);
+//											System.out.println("taille du partage arondi supp : " + partageMorceauxD);
 
 											int partageMorceaux = (int) Math.ceil( partageMorceauxD )  ;
 											System.out.println("taille du partage arondi supp : " + partageMorceaux);
@@ -215,7 +230,9 @@ public class P2PClientMain {
 											tr.start();
 											tr.join();
 										}
-										// mettre a jour la liste de fichier du client
+										/**
+										 * met a jour la liste de fichier du client
+										 */
 										listFiles.addFilesCreated(downThisFile);
 
 									}else {
@@ -226,6 +243,9 @@ public class P2PClientMain {
                                     break;
 
 								case "search":
+									/**
+									 * recuperation du resultat de la recherche (String) a afficher
+									 */
 									currentSearch = (P2PFile [])sockIn.readObject();
 									if (currentSearch.length == 0) {
 										System.out.println("La liste des résultats est vide");

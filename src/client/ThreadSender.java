@@ -5,6 +5,9 @@ import java.net.*;
 
 public class ThreadSender extends Thread {
 
+    /**
+     * Initialisation de toutes les variables qui seront utilisées dans ce programme
+     */
     private Socket sockComm = null;
     private ObjectInputStream sockIn = null;
 
@@ -30,6 +33,10 @@ public class ThreadSender extends Thread {
 
     public void run() {
         try {
+
+            /**
+             * attente de la resseption des informations pour la suite du programme
+             */
             sockIn = new ObjectInputStream(new BufferedInputStream(sockComm.getInputStream()));
             String info = sockIn.readUTF();
 
@@ -37,8 +44,11 @@ public class ThreadSender extends Thread {
 //            System.out.println(pathFile + info.split(":")[1]);
 
 
+            /**
+             * création d'un point d'acces du fichier a lire
+             * et initialisation de la socket UDP pour la transmition
+             */
             outFile = new RandomAccessFile( pathFile + info.split(":")[1],"r" );
-
             datagramSocketComm = new DatagramSocket();
 
             bufRequete = new byte[1024];
@@ -51,19 +61,26 @@ public class ThreadSender extends Thread {
 
             int count = 0;
 
-//            System.out.println("debut");
-
+            /**
+             * demarage de l'envoie des données du fichier
+             */
             if (derMorceauExclu - preMorceauInclu > 0) {
                 do {
+                    /**
+                     * positionnement pour la suite de la lecture du fichier
+                     * puis, lecture du fichier et enregistrement des donner dans 'bufRequete'
+                     */
                     outFile.seek((preMorceauInclu + count)*1024);
                     outFile.read(bufRequete);
-
+                    /**
+                     * envoi des donnée du fichier par la socket UDP
+                     */
                     pkRequeteSend.setData(bufRequete);
                     datagramSocketComm.send(pkRequeteSend);
+
                     count++;
                 } while (count <= derMorceauExclu - preMorceauInclu);
             }
-//            System.out.println("fini");
 
         } catch (IOException e) {
             e.printStackTrace();

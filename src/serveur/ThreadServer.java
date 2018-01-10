@@ -136,23 +136,27 @@ public class ThreadServer extends Thread {
 
                     case "get":
 
+                        /**
+                         * attente de la resseption d'un requet permetant la validation du telechargement du fichier
+                         */
                         String valide = sockIn.readUTF();
                         if (Objects.equals(valide, "valide")){
+                            //selectionne le fichier a telechargeer
                             int num = Integer.parseInt(requete.getArg());
                             P2PFile downThisFile = currentSearchArray[num-1];
-
                             listFiles = lfs.getListFiles();
-
                             ArrayList<SocketAddress> listAdress = listFiles.get(downThisFile);
 
+                            //recuperation de la liste des adresse qui possede le fichier a telecharger
                             SocketAddress[] tblListAdress = new SocketAddress[listAdress.size()];
                             listAdress.toArray(tblListAdress);
 
+                            //envoie de la liste des adresse
                             sockOs.writeObject(tblListAdress);
                             sockOs.flush();
 
+                            //envoie de la liste des port de socketServeur crespondant a la liste d'adresse precedament envoyé.
                             int[] tblPortSocketServeur = lfs.createArrayNumberPort(listAdress);
-
                             sockOs.writeObject(tblPortSocketServeur);
                             sockOs.flush();
 

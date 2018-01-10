@@ -13,6 +13,10 @@ import comServCli.P2PFile;
 
 public class ThreadReceiver extends Thread  {
 
+    /**
+     * Initialisation de toutes les variables qui seront utilisées dans ce programme
+     */
+
     private InetAddress address;
     private int portTCP;
 
@@ -50,12 +54,16 @@ public class ThreadReceiver extends Thread  {
             sockOs = new ObjectOutputStream(new BufferedOutputStream(sockComm.getOutputStream()));
             sockOs.flush();
 
-
+            /**
+             * initialisation de la socket UDP pour la reception
+             */
             datagramSocketComm = new DatagramSocket();
             int portUDP = datagramSocketComm.getLocalPort();
             //envoi des infos via socket TCP
-//            System.out.println(address.getHostAddress() + ":" + portTCP + ":" + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
-
+            /**
+             * envoi des infos via socket TCP
+             * affichage des infos envoyé
+             */
             System.out.println("requete envoyer : " + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
             sockOs.writeUTF(portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
             sockOs.flush();
@@ -63,17 +71,25 @@ public class ThreadReceiver extends Thread  {
             bufRequete = new byte[1024];
 
             int count = 0;
-            int amount;
 
+            /**
+             * demarage de la reception des données du fichier
+             */
             if (derMorceauExclu - preMorceauInclu > 0){
                 do{
                     pkRequeteReceive = new DatagramPacket(bufRequete, bufRequete.length);
                     datagramSocketComm.receive(pkRequeteReceive);
 
+                    /**
+                     * positionnement pour la suite de l'écriture du fichier
+                     * et ecriture du fichier
+                     */
                     fileCreated.seek((preMorceauInclu + count)*1024);
-
                     fileCreated.write(bufRequete);
 
+                    /**
+                     * affichage du numero du morceau recu + affichage du nombre de bite ecrit sur la totalité à écrtire
+                     */
                     System.out.println("n°" + (count +1));
                     System.out.println(((preMorceauInclu + count)*1024) + " / " +( file.getSizeFile() ) );
 

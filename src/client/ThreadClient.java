@@ -6,6 +6,10 @@ import java.net.Socket;
 
 public class ThreadClient extends Thread {
 
+    /**
+     * Initialisation de toutes les variables qui seront utilisées dans ce programme
+     */
+
     private ServerSocket servSock = null;
     private Socket sockComm = null;
     private ThreadSender threadSender;
@@ -32,6 +36,10 @@ public class ThreadClient extends Thread {
     public void run() {
         try {
             while (true){
+
+                /**
+                 * attente de connection d'un client voulant telecharger un fichier
+                 */
                 sockComm = servSock.accept();
                 threadSender = new ThreadSender(sockComm, lfc, pathFile);
                 threadSender.start();
