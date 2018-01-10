@@ -52,7 +52,7 @@ public class ThreadReceiver extends Thread  {
             datagramSocketComm = new DatagramSocket();
             int portUDP = datagramSocketComm.getLocalPort();
             //envoi des infos via socket TCP
-            System.out.println(address.getHostAddress() + ":" + portTCP + ":" + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
+//            System.out.println(address.getHostAddress() + ":" + portTCP + ":" + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
 
             System.out.println("requete envoyer : " + portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
             sockOs.writeUTF(portUDP + ":" +  file.getNameFile() + ":" + file.getSizeFile() + ":" + preMorceauInclu + ":" + derMorceauExclu);
@@ -72,12 +72,12 @@ public class ThreadReceiver extends Thread  {
 
                     fileCreated.write(bufRequete);
 
-                    System.out.println(((preMorceauInclu + count)*1024) + " / " +( file.getSizeFile() - (derMorceauExclu - preMorceauInclu) ) );
-//                    System.out.println(Arrays.toString(bufRequete));
+                    System.out.println("n°" + (count +1));
+                    System.out.println(((preMorceauInclu + count)*1024) + " / " +( file.getSizeFile() ) );
 
                     count++;
 
-                }while (count < derMorceauExclu - preMorceauInclu);
+                }while (count <= derMorceauExclu - preMorceauInclu);
             }
 
         } catch (IOException e) {

@@ -76,11 +76,11 @@ public class P2PClientMain {
 			sockConn = new ServerSocket(0);
 			tc = new ThreadClient(sockConn, listFiles, repository.getAbsolutePath() + "/" );
 			tc.start();
-			System.out.println("port : " + sockConn.getLocalPort());
+			System.out.println("port Serveur : " + sockConn.getLocalPort());
 
 			//On crée la socket qui se connecte au serveur
 			sockComm = new Socket(ipServ, portServ);
-			System.out.println("port : " + sockComm.getLocalPort());
+			System.out.println("port Comm : " + sockComm.getLocalPort());
 
 			//On instancie les flux
 			sockIn = new ObjectInputStream(new BufferedInputStream(sockComm.getInputStream()));
@@ -219,6 +219,10 @@ public class P2PClientMain {
 		finally {
 			try {
 
+				if (sockConn != null){
+					sockConn.close();
+				}
+
 				if (tc != null) {
 					tc.stop();
 				}
@@ -235,9 +239,7 @@ public class P2PClientMain {
 					sockComm.close();
 				}
 
-				if (sockConn != null){
-					sockConn.close();
-				}
+
 			}
 			catch(IOException e) {
 				System.out.println("Erreur IO");

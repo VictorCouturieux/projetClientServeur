@@ -51,7 +51,7 @@ public class ThreadSender extends Thread {
 
             int count = 0;
 
-            System.out.println("debut");
+//            System.out.println("debut");
 
             if (derMorceauExclu - preMorceauInclu > 0) {
                 do {
@@ -61,9 +61,9 @@ public class ThreadSender extends Thread {
                     pkRequeteSend.setData(bufRequete);
                     datagramSocketComm.send(pkRequeteSend);
                     count++;
-                } while (count < derMorceauExclu - preMorceauInclu);
+                } while (count <= derMorceauExclu - preMorceauInclu);
             }
-            System.out.println("fini");
+//            System.out.println("fini");
 
         } catch (IOException e) {
             e.printStackTrace();
