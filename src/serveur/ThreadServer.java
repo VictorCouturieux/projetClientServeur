@@ -90,7 +90,7 @@ public class ThreadServer extends Thread {
                  * 			  On parcourt ensuite la HashMap en parcourant les clés et on regarde si cette clé contient le motif et si c'est le cas, on ajoute le fichier dans l'ArrayList contenant les résultats de la recherche.
                  * "list" : Envoie au client l'ensemble de la liste des fichiers qu'ils possèdent
                  * "quit" : Gestion de la déconnexion du client en mettant à jour la liste des fichiers possédé par le serveur
-                 * "get" : 
+                 * "get" : Envoi des informations nécessaire au téléchargement pour le client
                  */
                 switch (commande) {
                     case "help":
@@ -137,7 +137,7 @@ public class ThreadServer extends Thread {
                     case "get":
 
                         /**
-                         * attente de la resseption d'un requet permetant la validation du telechargement du fichier
+                         * attente de la reception d'une requete permettant la validation du telechargement du fichier
                          */
                         String valide = sockIn.readUTF();
                         if (Objects.equals(valide, "valide")){
