@@ -1,2 +1,2 @@
 # projetClientServeur
-projet client serveur L3pro
+client/server academic project 
